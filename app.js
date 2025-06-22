@@ -1,4 +1,5 @@
 const express = require('express');
+const { userController, searchController } = require('./controller');
 const app = express();
 
 
@@ -14,10 +15,7 @@ app.get("/", (req, res) => {
 
 // Dynamic Routing in Express.js
 
-app.get("/user/:username", (req, res) => {
-    const username = req.params.username;
-    res.send(`Welcome ${username}`);
-});
+app.get("/user/:username", userController);
 
 
 
@@ -26,10 +24,7 @@ app.get("/user/:username", (req, res) => {
 
 // localhost:3000/search?query=express
 
-app.get("/search", (req, res) => {
-    const product = req.query.product;
-    res.send(`You searched for: ${product}`);
-})
+app.get("/search", searchController)
 
 
 
