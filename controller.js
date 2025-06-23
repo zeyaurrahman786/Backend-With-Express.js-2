@@ -1,13 +1,11 @@
-const userController = (req, res) => {
-    const username = req.params.username;
-    res.send(`Welcome ${username}`);
+const userLogin = (req, res) => {
+    res.send("User Login Page");
 }
 
 
-const searchController = (req, res) => {
-    const product = req.query.product;
-    res.send(`You searched for: ${product}`);
+const userSignup = (req, res) => {
+    res.send("User Signup Page");
 }
 
 
-module.exports = {userController, searchController};
+module.exports = { userLogin, userSignup };
