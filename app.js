@@ -1,5 +1,5 @@
 const express = require('express');
-const router = require('./route.js');
+// const router = require('./route.js');
 const app = express();
 
 
@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 });
 
 
-app.use('/user', router);
+// app.use('/user', router);
 
 
 
@@ -28,11 +28,11 @@ app.post("/users", (req, res) => {
 
 
 // Handling a PUT Request
-app.put("/users/:id", (req, res) => {
+app.put("/users/:id", (req,res) => {
   const userId = req.params.id;
-  const { name, email } = req.body;
+  const {name, email} = req.body;
   res.json({
-    message: `User ${userId} updated to ${name}, ${email}`,
+    message: `User with ID ${userId} updated to ${name}, ${email} successfully!`,
   });
 });
 
@@ -43,10 +43,9 @@ app.put("/users/:id", (req, res) => {
 app.delete("/users/:id", (req, res) => {
   const userId = req.params.id;
   res.json({
-    message: `User with ID ${userId} deleted successfully!`,
+    message: `User with ID ${userId} deleted successfully!`
   });
 });
-
 
 
 app.listen(3000, () => {
