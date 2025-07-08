@@ -1,22 +1,22 @@
-const express = require('express');
+// const express = require('express');
 // const router = require('./route.js');
-const app = express();
+// const app = express();
 
 
-app.use(express.json());
+// app.use(express.json());
 
 
 // Middleware
-app.use((req, res, next) => {
-    console.log("A new request received at " + Date.now());
-    next();
-})
+// app.use((req, res, next) => {
+//     console.log("A new request received at " + Date.now());
+//     next();
+// })
 
 
 // Handling a GET Request
-app.get("/", (req, res) => {
-    res.send("Welcome to the Home Page!");
-});
+// app.get("/", (req, res) => {
+//     res.send("Welcome to the Home Page!");
+// });
 
 
 // app.use('/user', router);
@@ -54,6 +54,17 @@ app.get("/", (req, res) => {
 // });
 
 
-app.listen(3000, () => {
-  console.log("Server is running on port http://localhost:3000");
-});
+
+
+
+// app.post("/form", (req, res) => {
+//   console.log(req.body);
+//   res.send("Form data received successfully!");
+// })
+
+
+
+
+// app.listen(3000, () => {
+//   console.log("Server is running on port http://localhost:3000");
+// });
