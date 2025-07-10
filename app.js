@@ -68,3 +68,45 @@
 // app.listen(3000, () => {
 //   console.log("Server is running on port http://localhost:3000");
 // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Connecting to a Database (MongoDB)
+
+const express = require('express');
+const mongoose = require('mongoose');
+
+const app = express();
+
+
+const MONGODB_URI = "mongodb://localhost:27017/express";
+
+mongoose.connect(MONGODB_URI).then(() => {
+    console.log("Database Connected Successfully!");
+})
+
+
+app.get("/", (req, res) => {
+    res.send("Welcome to the Home Page!");
+});
+
+
+app.listen(3000, () => {
+  console.log("Server is running on port http://localhost:3000");
+});
