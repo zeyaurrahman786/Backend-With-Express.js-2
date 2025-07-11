@@ -89,24 +89,47 @@
 
 // Connecting to a Database (MongoDB)
 
+
 const express = require('express');
 const mongoose = require('mongoose');
+const { Person } = require('./models/Person.js');
 
 const app = express();
 
-
-const MONGODB_URI = "mongodb://localhost:27017/express";
-
-mongoose.connect(MONGODB_URI).then(() => {
-    console.log("Database Connected Successfully!");
-})
+const MONGODB_URI = "mongodb+srv://zeyaurrahmanfxt:expressjs123@cluster0.0hcpj3g.mongodb.net/expressjs";
 
 
-app.get("/", (req, res) => {
-    res.send("Welcome to the Home Page!");
+mongoose.connect(MONGODB_URI)
+.then(() => {
+    console.log("Connected to MongoDB successfully!");
+}).catch((err) => {
+    console.error("Failed to connect to MongoDB:", err);
 });
 
 
+app.get("/", (req, res) => {
+  res.send("Welcome to the Home Page!");
+});
+
+// CRUD Operation -> Create, Read, Update, Delete
+
+// Creating Data to the Database (MongoDB)
+
+app.post("/person", express.json(), async (req, res) => {
+    const { name, email, password, age } = req.body;
+    const newPerson = new Person({
+        name,
+        email,
+        password,
+        age
+    })
+    await newPerson.save()
+    console.log(newPerson);
+    res.send("Person created successfully!");
+})
+
+
+
 app.listen(3000, () => {
-  console.log("Server is running on port http://localhost:3000");
+  console.log("Server is running on http://localhost:3000");
 });
