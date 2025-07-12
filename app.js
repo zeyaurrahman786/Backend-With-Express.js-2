@@ -111,21 +111,24 @@ app.get("/", (req, res) => {
   res.send("Welcome to the Home Page!");
 });
 
+
 // CRUD Operation -> Create, Read, Update, Delete
 
 // Creating Data to the Database (MongoDB)
 
 app.post("/person", express.json(), async (req, res) => {
-    const { name, email, password, age } = req.body;
+    const { name, email, password, gender, education, age } = req.body;
     const newPerson = new Person({
         name,
         email,
         password,
+        gender,
+        education,
         age
     })
     await newPerson.save()
     console.log(newPerson);
-    res.send("Person created successfully!");
+    res.send("Person data created successfully!");
 })
 
 
