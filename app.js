@@ -87,50 +87,185 @@
 
 
 
-// Connecting to a Database (MongoDB)
+// // Connecting to a Database (MongoDB)
 
+
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const { Person } = require('./models/Person.js');
+
+// const app = express();
+
+// const MONGODB_URI = "mongodb+srv://zeyaurrahmanfxt:expressjs123@cluster0.0hcpj3g.mongodb.net/expressjs";
+
+
+// mongoose.connect(MONGODB_URI)
+// .then(() => {
+//     console.log("Connected to MongoDB successfully!");
+// }).catch((err) => {
+//     console.error("Failed to connect to MongoDB:", err);
+// });
+
+
+// app.get("/", (req, res) => {
+//   res.send("Welcome to the Home Page!");
+// });
+
+
+// // CRUD Operation -> Create, Read, Update, Delete
+
+// // Creating Data to the Database (MongoDB)
+
+// app.post("/person", express.json(), async (req, res) => {
+//     const { name, email, password, gender, education, age } = req.body;
+//     const newPerson = new Person({
+//         name,
+//         email,
+//         password,
+//         gender,
+//         education,
+//         age
+//     })
+//     await newPerson.save()
+//     console.log(newPerson);
+//     res.send("Person data created successfully!");
+// })
+
+
+
+// // Updating Data in the Database (MongoDB)
+
+// app.put("/person", express.json(), async (req, res) => {
+//   const { id } = req.body;
+//   const updatedData = await Person.findByIdAndUpdate(id, {age: '18'})
+//   console.log(updatedData);
+//   res.send("Person data updated successfully!");
+// });
+
+
+
+// // Deleting Data from the Database (MongoDB)
+
+// app.delete("/person/:id", async (req, res) => {
+//   const { id } = req.params;
+//   await Person.findByIdAndDelete(id);
+//   res.send("Person data deleted successfully!");
+// });
+
+
+
+// app.listen(3000, () => {
+//   console.log("Server is running on http://localhost:3000");
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Working with Cookies
+
+// const express = require('express');
+// const cookieParser = require('cookie-parser');
+
+// const app = express();
+// app.use(cookieParser());
+
+
+// app.get("/", (req, res) => {
+//   res.cookie("name", "express-app", { maxAge: 360000 });
+//   res.send("Welcome to the Home Page!");
+// })
+
+
+// app.get("/fetch", (req, res) => {
+//   console.log(req.cookies);
+//   res.send("API Called");
+// })
+
+
+// app.get("/remove-cookie", (req, res) => {
+//   res.clearCookie("name");
+//   res.send("Cookie cleared successfully!");
+// });
+
+
+
+// app.listen(3000, () => {
+//   console.log("Server is running on http://localhost:3000");
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Working with Session Management
 
 const express = require('express');
-const mongoose = require('mongoose');
-const { Person } = require('./models/Person.js');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const app = express();
 
-const MONGODB_URI = "mongodb+srv://zeyaurrahmanfxt:expressjs123@cluster0.0hcpj3g.mongodb.net/expressjs";
+app.use(cookieParser());
 
-
-mongoose.connect(MONGODB_URI)
-.then(() => {
-    console.log("Connected to MongoDB successfully!");
-}).catch((err) => {
-    console.error("Failed to connect to MongoDB:", err);
-});
+app.use(session({
+  secret: "sample-secret",
+  resave: false,
+  saveUninitialized: true,
+}))
 
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Home Page!");
+})
+
+
+
+app.get("/visit", (req, res) => {
+  if (req.session.page_views) {
+    req.session.page_views++;
+    res.send(`You have visited this page ${req.session.page_views} times.`);
+  } else {
+    req.session.page_views = 1;
+    res.send("Welcome to the session management demo! You are visiting for the first time.");
+  }
 });
 
 
-// CRUD Operation -> Create, Read, Update, Delete
 
-// Creating Data to the Database (MongoDB)
-
-app.post("/person", express.json(), async (req, res) => {
-    const { name, email, password, gender, education, age } = req.body;
-    const newPerson = new Person({
-        name,
-        email,
-        password,
-        gender,
-        education,
-        age
-    })
-    await newPerson.save()
-    console.log(newPerson);
-    res.send("Person data created successfully!");
+app.get("/remove-visit", (req, res) => {
+  req.session.destroy();
+    res.send("Session removed successfully!");
 })
-
 
 
 app.listen(3000, () => {
