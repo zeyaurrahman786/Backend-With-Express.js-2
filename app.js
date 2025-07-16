@@ -89,7 +89,6 @@
 
 // // Connecting to a Database (MongoDB)
 
-
 // const express = require('express');
 // const mongoose = require('mongoose');
 // const { Person } = require('./models/Person.js');
@@ -180,27 +179,27 @@
 // Working with Cookies
 
 // const express = require('express');
-// const cookieParser = require('cookie-parser');
+// const cookie_Parser = require('cookie-parser');
 
 // const app = express();
-// app.use(cookieParser());
+// app.use(cookie_Parser());
 
 
 // app.get("/", (req, res) => {
-//   res.cookie("name", "express-app", { maxAge: 360000 });
-//   res.send("Welcome to the Home Page!");
+//     res.cookie("name", "express-app", { maxAge: 3600000 });
+//     res.send("Welcome to the Home Page!");
 // })
 
 
 // app.get("/fetch", (req, res) => {
-//   console.log(req.cookies);
-//   res.send("API Called");
-// })
+//     console.log(req.cookies);
+//     res.send("Cookies fetched successfully!");
+// });
 
 
 // app.get("/remove-cookie", (req, res) => {
-//   res.clearCookie("name");
-//   res.send("Cookie cleared successfully!");
+//     res.clearCookie("name");
+//     res.send("Cookie removed successfully!");
 // });
 
 
@@ -229,43 +228,124 @@
 
 // Working with Session Management
 
+// const express = require('express');
+// const cookie_Parser = require('cookie-parser');
+// const session = require('express-session');
+
+
+// const app = express();
+// app.use(cookie_Parser());
+// app.use(session({
+//     secret: "mySecretKey",
+//     resave: false,
+//     saveUninitialized: true,
+// }));
+
+// app.get("/", (req, res) => {
+//     res.send("Welcome to the Home Page!");
+// });
+
+
+// app.get("/visit", (req, res) => {
+//     if(req.session.page_views){
+//         req.session.page_views++;
+//         res.send(`You have visited this page ${req.session.page_views} times`);
+//     } else {
+//         req.session.page_views = 1;
+//         res.send("Welcome to the page for the first time!");
+//     }
+// });
+
+
+
+// app.get("/remove-visit", (req, res) => {
+//     req.session.destroy();
+//     res.send("Session data cleared successfully!");
+// });
+
+
+// app.listen(3000, () => {
+//   console.log("Server is running on http://localhost:3000");
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Authentication in Express.js
+
 const express = require('express');
-const cookieParser = require('cookie-parser');
+const cookie_Parser = require('cookie-parser');
 const session = require('express-session');
+
 
 const app = express();
 
-app.use(cookieParser());
+app.use(express.json());
+app.use(cookie_Parser());
 
 app.use(session({
-  secret: "sample-secret",
-  resave: false,
-  saveUninitialized: true,
-}))
+    secret: "mySecretKey",
+    resave: false,
+    saveUninitialized: true,
+}));
+
+
+const users = [];
 
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the Home Page!");
-})
+    res.send("Welcome to the Home Page!");
+});
 
 
-
-app.get("/visit", (req, res) => {
-  if (req.session.page_views) {
-    req.session.page_views++;
-    res.send(`You have visited this page ${req.session.page_views} times.`);
-  } else {
-    req.session.page_views = 1;
-    res.send("Welcome to the session management demo! You are visiting for the first time.");
-  }
+app.post("/signup", (req, res) => {
+    const { username, password } = req.body;
+    users.push({
+        username,
+        password
+    });
+    res.send("User signed up successfully!");
 });
 
 
 
-app.get("/remove-visit", (req, res) => {
-  req.session.destroy();
-    res.send("Session removed successfully!");
+
+app.post("/login", (req, res) => {
+    const { username, password } = req.body;
+    const user = users.find(u => u.username === username);
+    if(!user || password !== user.password) {
+        return res.send("Invalid username or password");
+    }
+    req.session.user = user;
+    res.send("User logged in successfully!");
+});
+
+
+
+app.get("/profile", (req, res) => {
+    if(!req.session.user){
+        return res.send("You are unauthorized person");
+    }
+    res.send(`Welcome to your profile, ${req.session.user.username}!`);
 })
+
+
 
 
 app.listen(3000, () => {
