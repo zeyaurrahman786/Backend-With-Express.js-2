@@ -289,36 +289,103 @@
 
 // Authentication in Express.js
 
-const express = require('express');
-const cookie_Parser = require('cookie-parser');
-const session = require('express-session');
+// 1. Session-Based Authentication
+// (Uses cookies and sessions)
+
+// const express = require('express');
+// const cookie_Parser = require('cookie-parser');
+// const session = require('express-session');
+
+
+// const app = express();
+
+// app.use(express.json());
+// app.use(cookie_Parser());
+
+// app.use(session({
+//     secret: "mySecretKey",
+//     resave: false,
+//     saveUninitialized: true,
+// }));
+
+
+// const users = [];
+
+
+// app.get("/", (req, res) => {
+//     res.send("Welcome to the Home Page!");
+// });
+
+
+// app.post("/signup", (req, res) => {
+//     const { username, password } = req.body;
+//     users.push({
+//         username,
+//         password
+//     });
+//     res.send("User signed up successfully!");
+// });
+
+
+
+
+// app.post("/login", (req, res) => {
+//     const { username, password } = req.body;
+//     const user = users.find(u => u.username === username);
+//     if(!user || password !== user.password) {
+//         return res.send("Invalid username or password");
+//     }
+//     req.session.user = user;
+//     res.send("User logged in successfully!");
+// });
+
+
+
+// app.get("/profile", (req, res) => {
+//     if(!req.session.user){
+//         return res.send("You are unauthorized person");
+//     }
+//     res.send(`Welcome to your profile, ${req.session.user.username}!`);
+// })
+
+
+
+
+// app.listen(3000, () => {
+//   console.log("Server is running on http://localhost:3000");
+// });
+
+
+
+
+
+
+
+
+// 2. Token-Based Authentication
+// (Uses JWT or OAuth tokens)
+
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 
 const app = express();
-
 app.use(express.json());
-app.use(cookie_Parser());
-
-app.use(session({
-    secret: "mySecretKey",
-    resave: false,
-    saveUninitialized: true,
-}));
-
 
 const users = [];
-
 
 app.get("/", (req, res) => {
     res.send("Welcome to the Home Page!");
 });
 
 
-app.post("/signup", (req, res) => {
+app.post("/signup", async (req, res) => {
     const { username, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
     users.push({
         username,
-        password
+        password: hashedPassword
     });
     res.send("User signed up successfully!");
 });
@@ -326,23 +393,30 @@ app.post("/signup", (req, res) => {
 
 
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     const { username, password } = req.body;
     const user = users.find(u => u.username === username);
-    if(!user || password !== user.password) {
+    if(!user || !(await bcrypt.compare(password, user.password))) {
         return res.send("Invalid username or password");
     }
-    req.session.user = user;
-    res.send("User logged in successfully!");
+    const token = jwt.sign({username}, "test#secret");
+    res.json({token});
 });
 
 
 
 app.get("/profile", (req, res) => {
-    if(!req.session.user){
-        return res.send("You are unauthorized person");
+    try {
+        const token = req.header("authorization");
+    const decodedToken = jwt.verify(token, "test#secret");
+    if(!decodedToken.username) {
+        res.send(`Welcome, ${decodedToken.username}!`);
+    } else {
+        res.send("Welcome to your profile");
+    } 
+    } catch (error) {
+        res.send("Unauthorized access");
     }
-    res.send(`Welcome to your profile, ${req.session.user.username}!`);
 })
 
 
